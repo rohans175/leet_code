@@ -31,37 +31,53 @@ import "fmt"
 // The result of the merge is [1].
 // Note that because m = 0, there are no elements in nums1. The 0 is only there to ensure the merge result can fit in nums1.
 
-func main() {
-	nums1 := []int{4, 0, 0, 0, 0, 0}
-	nums2 := []int{1, 2, 3, 5, 6}
-	m := 1
-	n := 5
-	fmt.Println(FinalArray(nums1, nums2, m, n))
+type data struct {
+	nums1 []int
+	nums2 []int
+	m     int
+	n     int
 }
 
-func FinalArray(nums1 []int, nums2 []int, m int, n int) []int {
+func main() {
 
-	nums2_index := 0
-	nums2_res := 0
+	nums1 := []int{1, 2, 3, 0, 0, 0}
+	nums2 := []int{4, 5, 6}
+	m := 3
+	n := 3
 
-	if n == 0 {
-		return nums1
+	data := data{
+		nums1, nums2, m, n,
+	}
+	data.FinalArray()
+	fmt.Println(nums1)
+	fmt.Println(nums2)
+}
+
+func (d *data) FinalArray() {
+	nums1 := d.nums1
+	nums2 := d.nums2
+	m := d.m
+	n := d.n
+	lenNum1 := len(nums1) - 1
+
+	for m > 0 && n > 0 {
+		if nums1[m-1] < nums2[n-1] {
+			nums1[lenNum1] = nums2[n-1]
+			n--
+		} else {
+			nums1[lenNum1] = nums1[m-1]
+			m--
+		}
+		lenNum1--
+	}
+	for n > 0 {
+		nums1[lenNum1] = nums2[n-1]
+		n--
+		lenNum1--
 	}
 
-	for i := 0; i < m+n; i++ {
-		if nums1[i] != 0 && nums1[i] > nums2[nums2_index] {
-			temp := nums1[i]
-			nums1[i] = nums2[nums2_index]
-			nums2[nums2_index] = temp
-			nums2_index++
-		}
+	d.nums1 = nums1
 
-		if nums1[i] == 0 {
-			nums1[i] = nums2[nums2_res]
-			nums2_res++
-		}
-	}
-	return nums1
 }
 
 // Complexity is O(m+n)
